@@ -1,0 +1,11 @@
+# Backend
+backend/.env
+backend/node_modules/
+
+# Frontend
+frontend/.env
+frontend/node_modules/
+
+# OS files
+.DS_Store
+

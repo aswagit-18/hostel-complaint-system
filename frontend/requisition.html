@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maintenance Requisition</title>
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  />
+  <style>
+    body {
+      background-color: #eef2f3;
+      transition: background 0.5s, color 0.5s;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      transition: background 0.5s, color 0.5s;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      text-align: center;
+    }
+    .dark-mode {
+      background-color: #181818;
+      color: #f0f0f0;
+    }
+    .dark-mode .container {
+      background-color: #222;
+      color: #fff;
+      box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+    }
+    .dark-mode input,
+    .dark-mode select,
+    .dark-mode textarea {
+      background-color: #333;
+      color: white;
+      border: 1px solid #444;
+    }
+    .dark-mode .btn-toggle {
+      background: #444;
+      color: white;
+    }
+    .btn-toggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <button class="btn-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+
+  <div class="container">
+    <h3 class="text-center mb-4">Maintenance Requisition Form</h3>
+
+    <form id="requisitionForm" method="POST">
+      <div class="form-group">
+        <label>Registration Number</label>
+        <input
+          type="text"
+          name="reg_no"
+          id="regNo"
+          class="form-control"
+          readonly
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Student Name</label>
+        <input
+          type="text"
+          name="student_name"
+          id="studentName"
+          class="form-control"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Block & Room Number</label>
+        <input
+          type="text"
+          name="room_no"
+          id="roomNo"
+          class="form-control"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Type of Work</label>
+        <select
+          name="work_type"
+          id="workType"
+          class="form-control"
+          required
+        >
+          <option value="" disabled selected>Select Work Type</option>
+          <option value="Electrical">Electrical</option>
+          <option value="Plumbing">Plumbing</option>
+          <option value="Cleaning">Cleaning</option>
+          <option value="Internet">Internet</option>
+          <option value="Laundry">Laundry</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+        <select
+          name="category"
+          id="category"
+          class="form-control"
+          required
+        >
+          <option value="" disabled selected>Select Category</option>
+          <option value="Suggestion">Suggestion</option>
+          <option value="Improvement">Improvement</option>
+          <option value="Feedback">Feedback</option>
+          <option value="Requisition">Requisition</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Comments</label>
+        <textarea
+          name="comments"
+          id="comments"
+          class="form-control"
+          rows="3"
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">
+        Submit Requisition
+      </button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let storedRegNo = localStorage.getItem("regNo");
+      if (storedRegNo) {
+        document.getElementById("regNo").value = storedRegNo;
+      } else {
+        alert("No Registration Number found! Redirecting to login...");
+        window.location.href = "login.html";
+      }
+
+      if (localStorage.getItem("darkMode") === "enabled") {
+        document.body.classList.add("dark-mode");
+        document.querySelector(".btn-toggle").textContent = "☀ Light Mode";
+      }
+
+      // form submission to backend
+      const form = document.getElementById("requisitionForm");
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = {
+          reg_no: document.getElementById("regNo").value,
+          student_name: document.getElementById("studentName").value,
+          room_no: document.getElementById("roomNo").value,
+          work_type: document.getElementById("workType").value,
+          category: document.getElementById("category").value,
+          comments: document.getElementById("comments").value,
+        };
+
+        try {
+          const response = await fetch("http://localhost:5050/api/complaints", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(formData),
+});
+
+          if (response.ok) {
+            alert("Complaint submitted successfully!");
+            form.reset();
+          } else {
+            alert("Error submitting complaint. Please try again.");
+          }
+        } catch (error) {
+          alert("Server not responding. Make sure backend is running.");
+          console.error(error);
+        }
+      });
+    });
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+      if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("darkMode", "enabled");
+        document.querySelector(".btn-toggle").textContent = "☀ Light Mode";
+      } else {
+        localStorage.setItem("darkMode", "disabled");
+        document.querySelector(".btn-toggle").textContent = "🌙 Dark Mode";
+      }
+    }
+  </script>
+</body>
+</html>

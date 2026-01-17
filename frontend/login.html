@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h3 {
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .form-group input {
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            border-radius: 8px;
+            background-color: #667eea;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h3>Student Login</h3>
+    <form id="loginForm">
+        <div class="form-group">
+            <input type="text" id="regNo" class="form-control" placeholder="Registration Number" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="dob" class="form-control" placeholder="Date of Birth (DDMMYYYY)" pattern="\d{8}" title="Enter DOB in DDMMYYYY format" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="otp" class="form-control" placeholder="Enter OTP (DDMM of DOB)" pattern="\d{4}" title="Enter OTP in DDMM format" required>
+        </div>
+        <button type="button" class="btn btn-primary btn-block" onclick="loginUser()">Login</button>
+    </form>
+</div>
+
+<script>
+    function loginUser() {
+        const regNo = document.getElementById("regNo").value.trim();
+        const dob = document.getElementById("dob").value.trim();
+        const otp = document.getElementById("otp").value.trim();
+
+        if (regNo && dob && otp) {
+            if (dob.length !== 8 || isNaN(dob)) {
+                alert("Invalid DOB format! Please enter in DDMMYYYY format.");
+                return;
+            }
+
+            let day = dob.substring(0, 2);
+            let month = dob.substring(2, 4);
+            let correctOTP = day + month;
+
+            if (otp === correctOTP) {
+                alert("Login Successful!");
+                localStorage.setItem("regNo", regNo);
+                window.location.href = "requisition.html";
+            } else {
+                alert("Incorrect OTP! Please try again.");
+            }
+        } else {
+            alert("Please fill in all the fields.");
+        }
+    }
+</script>
+
+</body>
+</html>
