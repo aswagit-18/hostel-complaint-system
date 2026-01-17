@@ -1,9 +1,0 @@
-# Environment variables (DO NOT upload)
-.env
-
-# Node dependencies
-node_modules/
-
-# OS files
-.DS_Store
-
